@@ -49,7 +49,7 @@ with st.form("fitness_form"):
 
     dietary_preference = st.selectbox(
         "🥗 Dietary Preference",
-        ["No Preference", "Vegetarian", "Vegan", "Keto", "High-Protein"]
+        ["No Preference", "Vegetarian", "Vegan", "Keto", "High-Protein", "carb"]
     )
 
     submitted = st.form_submit_button("🚀 Generate My Fitness Plan")
