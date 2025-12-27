@@ -11,9 +11,7 @@ st.set_page_config(
 # Make sure to set GOOGLE_API_KEY in Streamlit secrets or environment variables
 # Example (local): export GOOGLE_API_KEY="your_api_key"
 
-# api_key = st.secrets["GOOGLE_API_KEY"]
 genai.configure(api_key=st.secrets.get("GOOGLE_API_KEY", ""))
-# genai.configure(api_key=api_key)
 # model = genai.GenerativeModel("gemini-1.5-flash")
 model = genai.GenerativeModel("gemini-2.5-flash")
 
