@@ -9,7 +9,8 @@ st.set_page_config(page_title="FitFuel: AI Fitness Coach", layout="centered")
 
 # ---------------- Gemini Configuration ----------------
 genai.configure(api_key=st.secrets.get("GOOGLE_API_KEY", ""))
-model = genai.GenerativeModel("gemini-1.5-flash")
+# model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 # ---------------- Session State ----------------
 if "plan" not in st.session_state:
@@ -42,7 +43,7 @@ with st.form("fitness_form"):
 
     dietary_preference = st.selectbox(
         "🥗 Dietary Preference",
-        ["No Preference", "Vegetarian", "Vegan", "Keto", "High-Protein"]
+        ["No Preference", "Vegetarian", "Vegan", "Keto", "High-Protein", "carbs"]
     )
 
     submitted = st.form_submit_button("🚀 Generate My Plan")
