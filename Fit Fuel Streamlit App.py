@@ -70,7 +70,7 @@ Format clearly using markdown headers and bullet points.
 
 # ---------------- Generate Plan ----------------
 if submitted:
-    with st.spinner("🤖 Generating your AI fitness plan..."):
+    with st.spinner("Generating your AI fitness plan..."):
         try:
             st.session_state.plan = generate_fitness_plan(
                 fitness_goal, weekly_workouts, dietary_preference
@@ -98,7 +98,7 @@ if st.session_state.plan:
     user_msg = st.text_input("Ask a follow-up question about your plan:")
 
     if st.button("Send") and user_msg:
-        with st.spinner("🤖 Thinking..."):
+        with st.spinner("Thinking..."):
             chat_prompt = f"""
 You are an AI fitness coach.
 
