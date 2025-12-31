@@ -199,8 +199,12 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 if "plan" not in st.session_state:
     st.session_state.plan = None
 
-if "chat" not in st.session_state:
-    st.session_state.chat = []
+# if "chat" not in st.session_state:
+#     st.session_state.chat = []
+
+if "conversation" not in st.session_state:
+    st.session_state.conversation = []
+
 
 # ---------------- Title ----------------
 st.title("🏋️‍♂️ FitFuel: Your AI Fitness Coach")
@@ -269,34 +273,85 @@ if st.session_state.plan:
 
     st.divider()
 
-    # ---------------- Chat Mode ----------------
-    st.subheader("💬 Chat with Your AI Coach")
+   # ---------------- Chat Mode ----------------
+st.subheader("💬 Chat with Your AI Coach")
 
-    for role, msg in st.session_state.chat:
-        if role == "user":
-            st.markdown(f"**You:** {msg}")
-        else:
-            st.markdown(f"**Coach:** {msg}")
+# Icons
+user_icon_url = "https://cdn-icons-png.flaticon.com/128/1057/1057240.png"
+bot_icon_url = "https://cdn-icons-png.flaticon.com/128/8943/8943377.png"
 
-    user_msg = st.text_input("Ask a follow-up question about your plan:")
+# Chat bubble styling
+st.markdown("""
+<style>
+.user-message {
+    background-color: #fafafa;
+    padding: 8px;
+    border-radius: 6px;
+}
+.bot-message {
+    background-color: #ffffff;
+    padding: 8px;
+    border-radius: 6px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-    if st.button("Send") and user_msg:
-        with st.spinner("Thinking..."):
-            chat_prompt = f"""
+# Chat display container
+chat_placeholder = st.empty()
+
+with chat_placeholder.container():
+    for chat in st.session_state.conversation:
+        col1, col2 = st.columns([1, 18])
+        with col1:
+            st.image(user_icon_url, width=32)
+        with col2:
+            st.markdown(
+                f'<div class="user-message">{chat["user"]}</div>',
+                unsafe_allow_html=True
+            )
+
+        col1, col2 = st.columns([1, 18])
+        with col1:
+            st.image(bot_icon_url, width=32)
+        with col2:
+            st.markdown(
+                f'<div class="bot-message">{chat["bot"]}</div>',
+                unsafe_allow_html=True
+            )
+
+# ---- Input form ----
+with st.form("chat_form", clear_on_submit=True):
+    user_question = st.text_input(
+        "Ask a follow-up question about your plan",
+        placeholder="E.g. Can you adjust this for home workouts?"
+    )
+    send = st.form_submit_button("ASK ME", use_container_width=True)
+
+# ---- Handle submission ----
+if send and user_question:
+    with st.spinner("Thinking..."):
+
+        chat_prompt = f"""
 You are an AI fitness coach.
 
 Here is the user's current fitness plan:
 {st.session_state.plan}
 
 User question:
-{user_msg}
+{user_question}
 
-Respond clearly and concisely.
+Answer clearly, safely, and concisely.
 """
-            reply = model.generate_content(chat_prompt).text
-            st.session_state.chat.append(("user", user_msg))
-            st.session_state.chat.append(("coach", reply))
-            st.rerun()
+
+        response = model.generate_content(chat_prompt).text
+
+        st.session_state.conversation.append({
+            "user": user_question,
+            "bot": response
+        })
+
+    st.rerun()
+
 
     st.divider()
 
@@ -321,8 +376,9 @@ Respond clearly and concisely.
     with col1:
         if st.button("🔄 Start Over"):
             st.session_state.plan = None
-            st.session_state.chat = []
+            st.session_state.conversation = []
             st.rerun()
+
 
     with col2:
         st.download_button(
