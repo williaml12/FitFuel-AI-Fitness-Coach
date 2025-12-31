@@ -199,9 +199,6 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 if "plan" not in st.session_state:
     st.session_state.plan = None
 
-# if "chat" not in st.session_state:
-#     st.session_state.chat = []
-
 if "conversation" not in st.session_state:
     st.session_state.conversation = []
 
