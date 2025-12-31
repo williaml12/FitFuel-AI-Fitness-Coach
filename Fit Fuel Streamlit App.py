@@ -5,25 +5,27 @@ from reportlab.lib.styles import getSampleStyleSheet
 from io import BytesIO
 
 # ---------------- Page Config ----------------
-st.set_page_config(page_title="FitFuel: AI Fitness Coach", layout="centered")
+st.set_page_config(
+    page_title="FitFuel: AI Fitness Coach",
+    layout="centered"
+)
 
 # ---------------- Gemini Configuration ----------------
 genai.configure(api_key=st.secrets.get("GOOGLE_API_KEY", ""))
-# model = genai.GenerativeModel("gemini-1.5-flash")
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 # ---------------- Session State ----------------
 if "plan" not in st.session_state:
     st.session_state.plan = None
 
-if "chat" not in st.session_state:
-    st.session_state.chat = []
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
 # ---------------- Title ----------------
 st.title("🏋️‍♂️ FitFuel: Your AI Fitness Coach")
 st.write(
     "Welcome to your **AI Fitness Coach**! 💪  \n"
-    "Get a personalized workout & meal plan, then chat with me to refine it." 
+    "Get a personalized workout & meal plan, then chat with me to refine it."
 )
 
 st.divider()
@@ -75,7 +77,7 @@ if submitted:
             st.session_state.plan = generate_fitness_plan(
                 fitness_goal, weekly_workouts, dietary_preference
             )
-            st.session_state.chat = []
+            st.session_state.messages = []  # reset chat
         except Exception as e:
             st.error(e)
 
@@ -89,31 +91,45 @@ if st.session_state.plan:
     # ---------------- Chat Mode ----------------
     st.subheader("💬 Chat with Your AI Coach")
 
-    for role, msg in st.session_state.chat:
-        if role == "user":
-            st.markdown(f"**You:** {msg}")
-        else:
-            st.markdown(f"**Coach:** {msg}")
+    # Display chat history
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-    user_msg = st.text_input("Ask a follow-up question about your plan:")
+    # ---- Chat Input (INTEGRATED CODE) ----
+    if prompt := st.chat_input("Ask a follow-up about your fitness plan..."):
 
-    if st.button("Send") and user_msg:
-        with st.spinner("Thinking..."):
-            chat_prompt = f"""
+        # User message
+        st.session_state.messages.append({
+            "role": "user",
+            "content": prompt
+        })
+        st.chat_message("user").write(prompt)
+
+        # AI response with plan context
+        full_prompt = f"""
 You are an AI fitness coach.
 
 Here is the user's current fitness plan:
 {st.session_state.plan}
 
 User question:
-{user_msg}
+{prompt}
 
-Respond clearly and concisely.
+Respond clearly, concisely, and safely.
 """
-            reply = model.generate_content(chat_prompt).text
-            st.session_state.chat.append(("user", user_msg))
-            st.session_state.chat.append(("coach", reply))
-            st.rerun()
+
+        with st.spinner("Thinking..."):
+            response = model.generate_content(full_prompt)
+            response_text = response.text
+
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response_text
+        })
+        st.chat_message("assistant").write(response_text)
+
+        st.rerun()
 
     st.divider()
 
@@ -138,7 +154,7 @@ Respond clearly and concisely.
     with col1:
         if st.button("🔄 Start Over"):
             st.session_state.plan = None
-            st.session_state.chat = []
+            st.session_state.messages = []
             st.rerun()
 
     with col2:
@@ -148,6 +164,173 @@ Respond clearly and concisely.
             file_name="AI_Fitness_Plan.pdf",
             mime="application/pdf"
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import streamlit as st
+# import google.generativeai as genai
+# from reportlab.platypus import SimpleDocTemplate, Paragraph
+# from reportlab.lib.styles import getSampleStyleSheet
+# from io import BytesIO
+
+# # ---------------- Page Config ----------------
+# st.set_page_config(page_title="FitFuel: AI Fitness Coach", layout="centered")
+
+# # ---------------- Gemini Configuration ----------------
+# genai.configure(api_key=st.secrets.get("GOOGLE_API_KEY", ""))
+# # model = genai.GenerativeModel("gemini-1.5-flash")
+# model = genai.GenerativeModel("gemini-2.5-flash")
+
+# # ---------------- Session State ----------------
+# if "plan" not in st.session_state:
+#     st.session_state.plan = None
+
+# if "chat" not in st.session_state:
+#     st.session_state.chat = []
+
+# # ---------------- Title ----------------
+# st.title("🏋️‍♂️ FitFuel: Your AI Fitness Coach")
+# st.write(
+#     "Welcome to your **AI Fitness Coach**! 💪  \n"
+#     "Get a personalized workout & meal plan, then chat with me to refine it." 
+# )
+
+# st.divider()
+
+# # ---------------- User Input Form ----------------
+# with st.form("fitness_form"):
+#     st.subheader("📋 Your Fitness Details")
+
+#     fitness_goal = st.selectbox(
+#         "🎯 Fitness Goal",
+#         ["Lose Weight", "Build Muscle", "Maintain Fitness", "Improve Endurance"]
+#     )
+
+#     weekly_workouts = st.slider(
+#         "🏃 Weekly Workouts (days/week)", 1, 7, 3
+#     )
+
+#     dietary_preference = st.selectbox(
+#         "🥗 Dietary Preference",
+#         ["No Preference", "Vegetarian", "Vegan", "Keto", "High-Protein", "Carbs"]
+#     )
+
+#     submitted = st.form_submit_button("🚀 Generate My Plan")
+
+# # ---------------- AI Plan Generator ----------------
+# def generate_fitness_plan(goal, workouts, diet):
+#     prompt = f"""
+# You are a professional AI fitness coach.
+
+# Create a personalized fitness plan including:
+# 1. Weekly workout schedule
+# 2. Simple meal guidance
+# 3. Actionable fitness tips
+
+# User profile:
+# - Goal: {goal}
+# - Workouts per week: {workouts}
+# - Diet: {diet}
+
+# Format clearly using markdown headers and bullet points.
+# """
+#     response = model.generate_content(prompt)
+#     return response.text
+
+# # ---------------- Generate Plan ----------------
+# if submitted:
+#     with st.spinner("Generating your AI fitness plan..."):
+#         try:
+#             st.session_state.plan = generate_fitness_plan(
+#                 fitness_goal, weekly_workouts, dietary_preference
+#             )
+#             st.session_state.chat = []
+#         except Exception as e:
+#             st.error(e)
+
+# # ---------------- Display Plan ----------------
+# if st.session_state.plan:
+#     st.subheader("📘 Your Personalized Plan")
+#     st.markdown(st.session_state.plan)
+
+#     st.divider()
+
+#     # ---------------- Chat Mode ----------------
+#     st.subheader("💬 Chat with Your AI Coach")
+
+#     for role, msg in st.session_state.chat:
+#         if role == "user":
+#             st.markdown(f"**You:** {msg}")
+#         else:
+#             st.markdown(f"**Coach:** {msg}")
+
+#     user_msg = st.text_input("Ask a follow-up question about your plan:")
+
+#     if st.button("Send") and user_msg:
+#         with st.spinner("Thinking..."):
+#             chat_prompt = f"""
+# You are an AI fitness coach.
+
+# Here is the user's current fitness plan:
+# {st.session_state.plan}
+
+# User question:
+# {user_msg}
+
+# Respond clearly and concisely.
+# """
+#             reply = model.generate_content(chat_prompt).text
+#             st.session_state.chat.append(("user", user_msg))
+#             st.session_state.chat.append(("coach", reply))
+#             st.rerun()
+
+#     st.divider()
+
+#     # ---------------- PDF Export ----------------
+#     def create_pdf(text):
+#         buffer = BytesIO()
+#         doc = SimpleDocTemplate(buffer)
+#         styles = getSampleStyleSheet()
+#         story = []
+
+#         for line in text.split("\n"):
+#             story.append(Paragraph(line.replace("<", "&lt;"), styles["Normal"]))
+
+#         doc.build(story)
+#         buffer.seek(0)
+#         return buffer
+
+#     pdf_file = create_pdf(st.session_state.plan)
+
+#     col1, col2 = st.columns(2)
+
+#     with col1:
+#         if st.button("🔄 Start Over"):
+#             st.session_state.plan = None
+#             st.session_state.chat = []
+#             st.rerun()
+
+#     with col2:
+#         st.download_button(
+#             "📄 Download Plan as PDF",
+#             pdf_file,
+#             file_name="AI_Fitness_Plan.pdf",
+#             mime="application/pdf"
+#         )
 
 
 
