@@ -46,3 +46,50 @@ FitFuel-AI-Fitness-Coach/
 ├── requirements.txt    # Python dependencies
 ├── README.md           # Project documentation
 └── assets/             # Optional images or resources
+```
+
+---
+
+## ▶️ Getting Started (Local Setup)
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/FitFuel-AI-Fitness-Coach.git
+cd FitFuel-AI-Fitness-Coach
+```
+
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the app
+```bash
+streamlit run app.py
+```
+
+---
+
+## 📌 Future Enhancements
+- Add personalized fitness tracking
+- Support multiple fitness levels
+- Add workout scheduling and reminders
+- Include progress visualizations
+- Integrate wearable data support
+
+---
+
+## 🙋‍♂️ Author
+Created by William Lu
+🔗 GitHub: https://github.com/williaml12
+
+Contributions, feedback, and feature suggestions are welcome!
+
+---
+
+## 📝 License
+
+This project is shared for personal and educational use.
+AI-generated fitness advice should not be considered professional medical guidance.
+
+Licensed under the [MIT License](LICENSE).
