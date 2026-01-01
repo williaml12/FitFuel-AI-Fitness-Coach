@@ -351,6 +351,7 @@ if st.session_state.plan:
 
 
     st.divider()
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
     # ---------------- PDF Export ----------------
     def create_pdf(text):
@@ -368,10 +369,12 @@ if st.session_state.plan:
 
     pdf_file = create_pdf(st.session_state.plan)
 
-    col1, col2 = st.columns(2)
+    # col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1, 1])
 
     with col1:
-        if st.button("🔄 Start Over"):
+        # if st.button("🔄 Start Over"):
+        if st.button("🔄 Start Over", use_container_width=True):
             st.session_state.plan = None
             st.session_state.conversation = []
             st.rerun()
@@ -383,6 +386,7 @@ if st.session_state.plan:
             pdf_file,
             file_name="AI_Fitness_Plan.pdf",
             mime="application/pdf"
+            use_container_width=True
         )
 
 
