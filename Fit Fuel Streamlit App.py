@@ -270,84 +270,84 @@ if st.session_state.plan:
 
     st.divider()
 
-   # ---------------- Chat Mode ----------------
-st.subheader("💬 Chat with Your AI Coach")
-
-# Icons
-user_icon_url = "https://cdn-icons-png.flaticon.com/128/1057/1057240.png"
-bot_icon_url = "https://cdn-icons-png.flaticon.com/128/8943/8943377.png"
-
-# Chat bubble styling
-st.markdown("""
-<style>
-.user-message {
-    background-color: #fafafa;
-    padding: 8px;
-    border-radius: 6px;
-}
-.bot-message {
-    background-color: #ffffff;
-    padding: 8px;
-    border-radius: 6px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Chat display container
-chat_placeholder = st.empty()
-
-with chat_placeholder.container():
-    for chat in st.session_state.conversation:
-        col1, col2 = st.columns([1, 18])
-        with col1:
-            st.image(user_icon_url, width=32)
-        with col2:
-            st.markdown(
-                f'<div class="user-message">{chat["user"]}</div>',
-                unsafe_allow_html=True
-            )
-
-        col1, col2 = st.columns([1, 18])
-        with col1:
-            st.image(bot_icon_url, width=32)
-        with col2:
-            st.markdown(
-                f'<div class="bot-message">{chat["bot"]}</div>',
-                unsafe_allow_html=True
-            )
-
-# ---- Input form ----
-with st.form("chat_form", clear_on_submit=True):
-    user_question = st.text_input(
-        "Ask a follow-up question about your plan",
-        placeholder="E.g. Can you adjust this for home workouts?"
-    )
-    send = st.form_submit_button("ASK ME", use_container_width=True)
-
-# ---- Handle submission ----
-if send and user_question:
-    with st.spinner("Thinking..."):
-
-        chat_prompt = f"""
-You are an AI fitness coach.
-
-Here is the user's current fitness plan:
-{st.session_state.plan}
-
-User question:
-{user_question}
-
-Answer clearly, safely, and concisely.
-"""
-
-        response = model.generate_content(chat_prompt).text
-
-        st.session_state.conversation.append({
-            "user": user_question,
-            "bot": response
-        })
-
-    st.rerun()
+    # ---------------- Chat Mode ----------------
+    st.subheader("💬 Chat with Your AI Coach")
+    
+    # Icons
+    user_icon_url = "https://cdn-icons-png.flaticon.com/128/1057/1057240.png"
+    bot_icon_url = "https://cdn-icons-png.flaticon.com/128/8943/8943377.png"
+    
+    # Chat bubble styling
+    st.markdown("""
+    <style>
+    .user-message {
+        background-color: #fafafa;
+        padding: 8px;
+        border-radius: 6px;
+    }
+    .bot-message {
+        background-color: #ffffff;
+        padding: 8px;
+        border-radius: 6px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Chat display container
+    chat_placeholder = st.empty()
+    
+    with chat_placeholder.container():
+        for chat in st.session_state.conversation:
+            col1, col2 = st.columns([1, 18])
+            with col1:
+                st.image(user_icon_url, width=32)
+            with col2:
+                st.markdown(
+                    f'<div class="user-message">{chat["user"]}</div>',
+                    unsafe_allow_html=True
+                )
+    
+            col1, col2 = st.columns([1, 18])
+            with col1:
+                st.image(bot_icon_url, width=32)
+            with col2:
+                st.markdown(
+                    f'<div class="bot-message">{chat["bot"]}</div>',
+                    unsafe_allow_html=True
+                )
+    
+    # ---- Input form ----
+    with st.form("chat_form", clear_on_submit=True):
+        user_question = st.text_input(
+            "Ask a follow-up question about your plan",
+            placeholder="E.g. Can you adjust this for home workouts?"
+        )
+        send = st.form_submit_button("ASK ME", use_container_width=True)
+    
+    # ---- Handle submission ----
+    if send and user_question:
+        with st.spinner("Thinking..."):
+    
+            chat_prompt = f"""
+    You are an AI fitness coach.
+    
+    Here is the user's current fitness plan:
+    {st.session_state.plan}
+    
+    User question:
+    {user_question}
+    
+    Answer clearly, safely, and concisely.
+    """
+    
+            response = model.generate_content(chat_prompt).text
+    
+            st.session_state.conversation.append({
+                "user": user_question,
+                "bot": response
+            })
+    
+        st.rerun()
 
 
     st.divider()
