@@ -385,7 +385,7 @@ if st.session_state.plan:
             "📄 Download Plan as PDF",
             pdf_file,
             file_name="AI_Fitness_Plan.pdf",
-            mime="application/pdf"
+            mime="application/pdf",
             use_container_width=True
         )
 
