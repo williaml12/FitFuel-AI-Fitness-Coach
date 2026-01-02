@@ -93,3 +93,16 @@ This project is shared for personal and educational use.
 AI-generated fitness advice should not be considered professional medical guidance.
 
 Licensed under the [MIT License](LICENSE).
+
+```yaml
+
+---
+
+If you’d like, I can also:
+
+✅ Generate a matching `requirements.txt`  
+✅ Add a disclaimer section for health-related apps  
+✅ Create a banner image for your README  
+
+Just say the word!
+```
