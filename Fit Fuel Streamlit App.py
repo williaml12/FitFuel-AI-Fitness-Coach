@@ -206,8 +206,11 @@ if "conversation" not in st.session_state:
 # ---------------- Title ----------------
 st.title("🏋️‍♂️ FitFuel: Your AI Fitness Coach")
 st.write(
-    "Welcome to your **AI Fitness Coach**! 💪  \n"
-    "Get a personalized workout & meal plan, then chat with me to refine it." 
+    # "Welcome to your **AI Fitness Coach**! 💪  \n"
+    # "Get a personalized workout & meal plan, then chat with me to refine it." 
+    "Welcome to your **AI Fitness Coach**! 💪\n\n"
+    "I'll help you create **personalized workout and meal plans** based on your goals and preferences. "
+    "Just fill out the details below, and I’ll generate a fitness plan tailored **just for you**." 
 )
 
 st.divider()
